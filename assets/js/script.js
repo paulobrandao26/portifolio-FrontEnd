@@ -7,7 +7,7 @@ const swiperWrapper = document.querySelector('.swiper-wrapper');
 const formulario = document.querySelector('#formulario');
 
 // Regex de validação do e-mail
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   async function getAboutGithub() {
     
@@ -66,9 +66,27 @@ getAboutGithub();
 async function getProjectsGithub() {
   try {
     const resposta = await fetch(
-      'https://api.github.com/users/paulobrandao26/repos?sort=updated&per_page=6'
+      'https://api.github.com/users/paulobrandao26/repos?sort=updated&per_page=100'
     );
     const repositorios = await resposta.json();
+  
+   const projetosEmDestaque = [
+  'publicai-monitor-web',
+  'publicai-monitor-api',
+  'Agenda-barbearia',
+  'app-minha-compras',
+  'Site-lojaFit',
+  'loja-fit-backend',
+];
+
+const repositoriosDestaque = projetosEmDestaque
+  .map((nome) =>
+    repositorios.find(
+      (repositorio) =>
+        repositorio.name.toLowerCase() === nome.toLowerCase()
+    )
+  )
+  .filter(Boolean);
 
     swiperWrapper.innerHTML = '';
 
@@ -87,7 +105,7 @@ async function getProjectsGithub() {
       Swift: { icone: 'swift' },
     };
 
-    repositorios.forEach((repositorio) => {
+    repositoriosDestaque.forEach((repositorio) => {
       const linguagemExibir = repositorio.language || 'GitHub';
       const config = linguagens[repositorio.language] || { icone: 'github' };
       const urlIcone = `./assets/icons/languages/${config.icone}.svg`;
