@@ -177,6 +177,8 @@ body.portfolio-page textarea { font: inherit; }
   transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
 }
 .button--lime { background: var(--lime); color: var(--ink); }
+body.portfolio-page a.button--lime,
+body.portfolio-page a.button--lime:hover { color: var(--ink); }
 .button--lime:hover { transform: translateY(-2px); background: #d4ff84; }
 .text-link { display: inline-flex; align-items: center; gap: 0.55rem; color: #f6f6ef; font-size: 0.88rem; }
 .text-link span { color: var(--lime); transition: transform 160ms var(--ease-out); }
@@ -206,6 +208,11 @@ body.portfolio-page textarea { font: inherit; }
   border: 1px solid rgba(246, 246, 239, 0.28);
   background: var(--lime);
   clip-path: polygon(8% 0, 100% 8%, 92% 100%, 0 93%);
+}
+.hero-portrait { animation: portrait-float 6s ease-in-out infinite; }
+@keyframes portrait-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.55rem); }
 }
 .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; mix-blend-mode: normal; }
 .hero-coordinate { position: absolute; z-index: 2; right: 3%; bottom: 12%; display: grid; gap: 0.4rem; color: var(--lime); }
