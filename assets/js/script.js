@@ -18,8 +18,6 @@ async function getAboutGithub() {
       aboutPortrait.alt = `Foto de perfil de ${perfil.name || 'Paulo Brandão'}`;
     }
 
-    document.querySelector('[data-profile-followers]').textContent = perfil.followers;
-    document.querySelector('[data-profile-repos]').textContent = perfil.public_repos;
   } catch (error) {
     console.error('Não foi possível carregar os dados do GitHub:', error);
   }
@@ -42,6 +40,15 @@ const nomesProjetos = {
   'loja-fit-backend': 'Loja Fit Backend',
 };
 
+const descricoesProjetos = {
+  'publicai-monitor-web': 'Interface para acompanhar licitações públicas e encontrar oportunidades.',
+  'publicai-monitor-api': 'Serviço que resume licitações públicas com inteligência artificial.',
+  'agenda-barbearia': 'Sistema de agendamento que organiza horários de uma barbearia.',
+  'app-minha-compras': 'Aplicativo para acompanhar compras feitas no cartão de crédito.',
+  'site-lojafit': 'Site da Loja Fit.',
+  'loja-fit-backend': 'Serviços que dão suporte às operações da Loja Fit.',
+};
+
 function nomeLegivel(nome) {
   if (nomesProjetos[nome.toLowerCase()]) return nomesProjetos[nome.toLowerCase()];
   return nome.replace(/[-_]/g, ' ').replace(/\b\w/g, (letra) => letra.toUpperCase());
@@ -50,7 +57,7 @@ function nomeLegivel(nome) {
 function atualizarCapitulo(capitulo, repositorio, indice) {
   const nome = nomeLegivel(repositorio.name);
   const linguagem = repositorio.language || 'Repositório público';
-  const descricao = repositorio.description || 'Explore o código, as tecnologias e o histórico deste projeto no GitHub.';
+  const descricao = descricoesProjetos[repositorio.name.toLowerCase()] || 'Confira este projeto no GitHub.';
   const icone = linguagens[repositorio.language] || 'github';
   const link = capitulo.querySelector('a');
 
@@ -64,32 +71,22 @@ function atualizarCapitulo(capitulo, repositorio, indice) {
     if (!deploy) {
       deploy = document.createElement('a');
       deploy.dataset.deployLink = '';
-      deploy.className = 'project-chapter__deploy';
+      deploy.className = 'button button--deploy project-chapter__deploy';
       deploy.target = '_blank';
       deploy.rel = 'noopener noreferrer';
-      deploy.textContent = 'Ver versão publicada ↗';
+      deploy.textContent = 'Deploy ↗';
       capitulo.append(deploy);
     }
     deploy.href = repositorio.homepage;
   }
 
-  if (indice === 0) atualizarPainel(repositorio, icone, nome, linguagem, descricao);
+  if (indice === 0) atualizarPainel(icone, nome, descricao);
 }
 
-function atualizarPainel(repositorio, icone, nome, linguagem, descricao) {
+function atualizarPainel(icone, nome, descricao) {
   document.querySelector('[data-stage-icon]').src = `./assets/icons/languages/${icone}.svg`;
-  document.querySelector('[data-stage-language]').textContent = linguagem;
   document.querySelector('[data-stage-name]').textContent = nome;
   document.querySelector('[data-stage-description]').textContent = descricao;
-  document.querySelector('[data-stage-link]').textContent = repositorio.homepage ? 'PROJETO PUBLICADO ↗' : 'REPOSITÓRIO NO GITHUB ↗';
-
-  const topics = repositorio.topics?.length ? repositorio.topics.slice(0, 3) : [linguagem, 'Open source'];
-  const topicContainer = document.querySelector('[data-stage-topics]');
-  topicContainer.replaceChildren(...topics.map((topic) => {
-    const tag = document.createElement('span');
-    tag.textContent = topic;
-    return tag;
-  }));
 }
 
 function observarCapitulos() {
@@ -104,16 +101,12 @@ function observarCapitulos() {
     const indice = capitulos.indexOf(atual);
     capitulos.forEach((capitulo, posicao) => {
       capitulo.classList.toggle('is-active', posicao === indice);
-      if (posicao === indice) atualizarPainel({
-        name: capitulo.querySelector('h3').textContent,
-        language: capitulo.dataset.language || 'GitHub',
-        description: capitulo.querySelector('[data-chapter-description]').textContent,
-        html_url: capitulo.querySelector('a').href,
-        topics: capitulo.dataset.topics ? capitulo.dataset.topics.split(',') : [],
-        homepage: capitulo.dataset.homepage || '',
-      }, linguagens[capitulo.dataset.language] || 'github', capitulo.querySelector('h3').textContent, capitulo.dataset.language || 'GitHub', capitulo.querySelector('[data-chapter-description]').textContent);
+      if (posicao === indice) atualizarPainel(
+        linguagens[capitulo.dataset.language] || 'github',
+        capitulo.querySelector('h3').textContent,
+        capitulo.querySelector('[data-chapter-description]').textContent,
+      );
     });
-    document.querySelector('[data-stage-number]').textContent = atual.dataset.number;
   }, { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.2, 0.6] });
 
   capitulos.forEach((capitulo) => observer.observe(capitulo));
@@ -142,20 +135,29 @@ async function getProjectsGithub() {
     const lista = document.querySelector('#project-archive-list');
     const itens = arquivo.map((nome) => porNome.get(nome.toLowerCase())).filter(Boolean);
     if (lista && itens.length) {
-      lista.replaceChildren(...itens.map((repositorio) => {
-        const item = document.createElement('li');
-        const link = document.createElement('a');
-        const nome = document.createElement('span');
-        const detalhes = document.createElement('span');
-        nome.textContent = nomeLegivel(repositorio.name);
-        detalhes.textContent = `${repositorio.language || 'GitHub'} ↗`;
-        link.href = repositorio.html_url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.append(nome, detalhes);
-        item.append(link);
-        return item;
-      }));
+      itens.forEach((repositorio) => {
+        const item = lista.querySelector(`[data-archive-repo="${repositorio.name.toLowerCase()}"]`);
+        if (!item) return;
+
+        item.querySelector('[data-archive-name]').textContent = nomeLegivel(repositorio.name);
+        item.querySelector('[data-archive-github]').href = repositorio.html_url;
+
+        let deploy = item.querySelector('[data-archive-deploy]');
+        if (repositorio.homepage) {
+          if (!deploy) {
+            deploy = document.createElement('a');
+            deploy.className = 'button button--deploy';
+            deploy.dataset.archiveDeploy = '';
+            deploy.target = '_blank';
+            deploy.rel = 'noopener noreferrer';
+            deploy.textContent = 'Deploy ↗';
+            item.querySelector('.archive-actions').append(deploy);
+          }
+          deploy.href = repositorio.homepage;
+        } else if (deploy) {
+          deploy.remove();
+        }
+      });
     }
   } catch (error) {
     console.error('Não foi possível carregar os projetos do GitHub:', error);
@@ -164,6 +166,20 @@ async function getProjectsGithub() {
 
 getProjectsGithub();
 observarCapitulos();
+
+function colorirRetratoAoRolar() {
+  const portrait = document.querySelector('.about-editorial__portrait');
+  if (!portrait || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (CSS.supports('animation-timeline: view()')) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver(([entry]) => {
+    portrait.classList.toggle('is-scroll-visible', entry.isIntersecting);
+  }, { threshold: 0.15 });
+  observer.observe(portrait);
+}
+
+colorirRetratoAoRolar();
 
 // Função de Validação do Formulário
 formulario.addEventListener('submit', function (event) {
