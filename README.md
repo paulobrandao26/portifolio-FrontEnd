@@ -26,7 +26,8 @@ O projeto consome dados dinâmicos da **API do GitHub**, permitindo que informa�
 - Integração com a **API do GitHub** para:
   - Exibição dinâmica das informações do perfil
   - Listagem automática dos repositórios
-- Exibição dos projetos em **carrossel interativo** utilizando **Swiper.js**
+- Apresentação editorial dos projetos, com um painel que acompanha os capítulos durante a rolagem no desktop
+- Lista de repositórios complementares carregada pela API do GitHub
 - **Formulário de contato com validação no frontend**, garantindo o correto preenchimento dos campos
 - Página dedicada de **confirmação de envio** do formulário
 - Navegação fluida com menu fixo e rolagem suave
@@ -44,9 +45,10 @@ portfolio/
 │
 ├── assets/
 │   ├── css/
-│   │   └── styles.css    # Estilos e responsividade
+│   │   ├── portfolio.css # Identidade visual, layouts e responsividade
+│   │   └── style.css     # Estilos da página de confirmação
 │   ├── js/
-│   │   └── scripts.js   # Integração com GitHub, carrossel e validações
+│   │   └── script.js     # Integração com GitHub, capítulos e validações
 │   ├── img/             # Imagens e ilustrações
 │   └── icons/           # Ícones das linguagens e redes sociais
 │
@@ -60,7 +62,6 @@ portfolio/
 - **HTML5**: Estruturação semântica do conteúdo
 - **CSS3**: Estilização, layout responsivo e animações
 - **JavaScript (ES6+)**: Interatividade, consumo de APIs e validações
-- **Swiper.js**: Carrossel de projetos responsivo
 - **Fom Submit:** Serviço de envio de e-mails via formulário HTML
 - **GitHub API**: Fonte dinâmica de dados do perfil e repositórios
 
@@ -80,7 +81,7 @@ Para executar o projeto em ambiente local, siga os passos abaixo.
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/paulobrandao26/portifolio-FrontEnd.git
    ```
 
 2. Acesse a pasta do projeto:
@@ -105,7 +106,7 @@ O site será aberto no navegador e todas as alterações poderão ser visualizad
 
 Este site está disponível publicamente através do **GitHub Pages**. Você pode acessar a versão online pelo link abaixo:
 
-🔗 https://github.com/paulobrandao26/Projeto-FrontEnd.git
+🔗 https://paulobrandao26.github.io/portifolio-FrontEnd/
 
 ------
 

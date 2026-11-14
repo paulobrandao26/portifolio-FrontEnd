@@ -1,7 +1,5 @@
   
-  const about = document.querySelector('#about');
-  
-const swiperWrapper = document.querySelector('.swiper-wrapper');
+const aboutPortrait = document.querySelector('.about-editorial__portrait img');
 
 // Seletor do Formulário
 const formulario = document.querySelector('#formulario');
@@ -9,229 +7,163 @@ const formulario = document.querySelector('#formulario');
 // Regex de validação do e-mail
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  async function getAboutGithub() {
-    
-   try{
-       const resposta = await fetch ('https://api.github.com/users/paulobrandao26')   
-       const perfil = await resposta.json();
-
-       about.innerHTML = '';
-       about.innerHTML =` <figure class="about-image">
-              <img src="${perfil.avatar_url}" alt="Foto do perfil - ${perfil.name}">
-         </figure>
-
-          <article class="about-content">
-           <h2>Sobre mim</h2>
-
-               <p>
-                Me chamo Paulo e estou em transição de carreira para a área de tecnologia.
-                 Atualmente desenvolvo projetos tanto em backend quanto em frontend, aplicando na 
-                 prática os conhecimentos adquiridos por meio de bootcamps, 
-                 faculdade e projetos pessoais. Meu objetivo é evoluir constantemente como 
-                 desenvolvedor e gerar impacto real no mercado através das minhas habilidades.
-        </p>
-
-        <div class="about-buttons-data">
-
-            <div class="buttons-container">
-                <a href="${perfil.html_url}" target="_blank" class="botao">GitHub</a>
-                <a href="assets/curriculo/CurriculoDev.pdf" target="_blank" class="botao">Currículo</a>
-            </div>
-
-            <div class="data-container">
-
-                <div class="data-item">
-                    <span class="data-number">${perfil.followers}</span>
-                    <span class="data-label">Seguidores</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-number">${perfil.public_repos}</span>
-                    <span class="data-label">Repositórios</span>
-                </div>
-
-            </div>
-
-        </div>
-    </article>
-    `;
-   } catch (error){
-    console.error('Erro ao buscar dados do Githu:', error)
-   }
-}  
-
-getAboutGithub();
-
-// Função para buscar os dados dos Projetos (repositórios públicos) do GitHub
-async function getProjectsGithub() {
+async function getAboutGithub() {
   try {
-    const resposta = await fetch(
-      'https://api.github.com/users/paulobrandao26/repos?sort=updated&per_page=100'
-    );
-    const repositorios = await resposta.json();
-  
-   const projetosEmDestaque = [
-  'publicai-monitor-web',
-  'publicai-monitor-api',
-  'Agenda-barbearia',
-  'app-minha-compras',
-  'Site-lojaFit',
-  'loja-fit-backend',
-];
+    const resposta = await fetch('https://api.github.com/users/paulobrandao26');
+    if (!resposta.ok) throw new Error(`GitHub respondeu ${resposta.status}`);
+    const perfil = await resposta.json();
 
-const repositoriosDestaque = projetosEmDestaque
-  .map((nome) =>
-    repositorios.find(
-      (repositorio) =>
-        repositorio.name.toLowerCase() === nome.toLowerCase()
-    )
-  )
-  .filter(Boolean);
+    if (perfil.avatar_url && aboutPortrait) {
+      aboutPortrait.src = perfil.avatar_url;
+      aboutPortrait.alt = `Foto de perfil de ${perfil.name || 'Paulo Brandão'}`;
+    }
 
-    swiperWrapper.innerHTML = '';
-
-    // Cores e ícones das linguagens
-    const linguagens = {
-      JavaScript: { icone: 'javascript' },
-      TypeScript: { icone: 'typescript' },
-      Python: { icone: 'python' },
-      Java: { icone: 'java' },
-      HTML: { icone: 'html' },
-      CSS: { icone: 'css' },
-      PHP: { icone: 'php' },
-      'C#': { icone: 'csharp' },
-      Go: { icone: 'go' },
-      Kotlin: { icone: 'kotlin' },
-      Swift: { icone: 'swift' },
-    };
-
-    repositoriosDestaque.forEach((repositorio) => {
-      const linguagemExibir = repositorio.language || 'GitHub';
-      const config = linguagens[repositorio.language] || { icone: 'github' };
-      const urlIcone = `./assets/icons/languages/${config.icone}.svg`;
-
-      const nomeFormatado = repositorio.name
-        .replace(/[-_]/g, ' ')
-        .replace(/[^a-zA-Z0-9\s]/g, '')
-        .toUpperCase();
-
-      const descricao = repositorio.description
-        ? repositorio.description.length > 100
-          ? repositorio.description.substring(0, 97) + '...'
-          : repositorio.description
-        : 'Projeto desenvolvido no GitHub';
-
-      // tags
-      const tags =
-        repositorio.topics?.length > 0
-          ? repositorio.topics
-              .slice(0, 3)
-              .map((topic) => `<span class="tag">${topic}</span>`)
-              .join('')
-          : `<span class="tag">${linguagemExibir}</span>`;
-
-      // Botões de ação
-      const botoesAcao = `
-        <div class="project-buttons">
-          <a href="${repositorio.html_url}" target="_blank" class="botao botao-sm">
-            GitHub
-          </a>
-          ${
-            repositorio.homepage
-              ? `
-                <a href="${repositorio.homepage}" target="_blank" class="botao-outline botao-sm">
-                  Deploy
-                </a>
-              `
-              : ''
-          }
-        </div>
-      `;
-
-      swiperWrapper.innerHTML += `
-        <div class="swiper-slide">
-          <article class="project-card">
-            <div class="project-image">
-              <img
-                src="${urlIcone}"
-                alt="Ícone ${linguagemExibir}"
-                onerror="this.onerror=null; this.src='./assets/icons/languages/github.svg';"
-              />
-            </div>
-
-            <div class="project-content">
-              <h3>${nomeFormatado}</h3>
-              <p>${descricao}</p>
-              <div class="project-tags">${tags}</div>
-              ${botoesAcao}
-            </div>
-          </article>
-        </div>
-      `;
-    });
-
-    iniciarSwiper();
+    document.querySelector('[data-profile-followers]').textContent = perfil.followers;
+    document.querySelector('[data-profile-repos]').textContent = perfil.public_repos;
   } catch (error) {
-    console.error('Erro ao buscar repositórios:', error);
+    console.error('Não foi possível carregar os dados do GitHub:', error);
   }
 }
 
+getAboutGithub();
+
+// Projetos destacados em capítulos: o painel acompanha a leitura sem controlar o scroll.
+const linguagens = {
+  JavaScript: 'javascript', TypeScript: 'typescript', Python: 'python', Java: 'java',
+  HTML: 'html', CSS: 'css', PHP: 'php', 'C#': 'csharp', Go: 'go', Kotlin: 'kotlin', Swift: 'swift',
+};
+
+const nomesProjetos = {
+  'publicai-monitor-web': 'PublicAI Monitor Web',
+  'publicai-monitor-api': 'PublicAI Monitor API',
+  'agenda-barbearia': 'Agenda Barbearia',
+  'app-minha-compras': 'App Minha Compras',
+  'site-lojafit': 'Site Loja Fit',
+  'loja-fit-backend': 'Loja Fit Backend',
+};
+
+function nomeLegivel(nome) {
+  if (nomesProjetos[nome.toLowerCase()]) return nomesProjetos[nome.toLowerCase()];
+  return nome.replace(/[-_]/g, ' ').replace(/\b\w/g, (letra) => letra.toUpperCase());
+}
+
+function atualizarCapitulo(capitulo, repositorio, indice) {
+  const nome = nomeLegivel(repositorio.name);
+  const linguagem = repositorio.language || 'Repositório público';
+  const descricao = repositorio.description || 'Explore o código, as tecnologias e o histórico deste projeto no GitHub.';
+  const icone = linguagens[repositorio.language] || 'github';
+  const link = capitulo.querySelector('a');
+
+  capitulo.querySelector('h3').textContent = nome;
+  capitulo.querySelector('[data-chapter-description]').textContent = descricao;
+  capitulo.dataset.number = String(indice + 1).padStart(2, '0');
+  link.href = repositorio.html_url;
+
+  if (repositorio.homepage) {
+    let deploy = capitulo.querySelector('[data-deploy-link]');
+    if (!deploy) {
+      deploy = document.createElement('a');
+      deploy.dataset.deployLink = '';
+      deploy.className = 'project-chapter__deploy';
+      deploy.target = '_blank';
+      deploy.rel = 'noopener noreferrer';
+      deploy.textContent = 'Ver versão publicada ↗';
+      capitulo.append(deploy);
+    }
+    deploy.href = repositorio.homepage;
+  }
+
+  if (indice === 0) atualizarPainel(repositorio, icone, nome, linguagem, descricao);
+}
+
+function atualizarPainel(repositorio, icone, nome, linguagem, descricao) {
+  document.querySelector('[data-stage-icon]').src = `./assets/icons/languages/${icone}.svg`;
+  document.querySelector('[data-stage-language]').textContent = linguagem;
+  document.querySelector('[data-stage-name]').textContent = nome;
+  document.querySelector('[data-stage-description]').textContent = descricao;
+  document.querySelector('[data-stage-link]').textContent = repositorio.homepage ? 'PROJETO PUBLICADO ↗' : 'REPOSITÓRIO NO GITHUB ↗';
+
+  const topics = repositorio.topics?.length ? repositorio.topics.slice(0, 3) : [linguagem, 'Open source'];
+  const topicContainer = document.querySelector('[data-stage-topics]');
+  topicContainer.replaceChildren(...topics.map((topic) => {
+    const tag = document.createElement('span');
+    tag.textContent = topic;
+    return tag;
+  }));
+}
+
+function observarCapitulos() {
+  const capitulos = [...document.querySelectorAll('.project-chapter')];
+  const scrollMomentSupported = matchMedia('(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)').matches;
+  if (!('IntersectionObserver' in window) || capitulos.length === 0 || !scrollMomentSupported) return;
+
+  const observer = new IntersectionObserver((entradas) => {
+    const visiveis = entradas.filter((entrada) => entrada.isIntersecting);
+    if (!visiveis.length) return;
+    const atual = visiveis.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0].target;
+    const indice = capitulos.indexOf(atual);
+    capitulos.forEach((capitulo, posicao) => {
+      capitulo.classList.toggle('is-active', posicao === indice);
+      if (posicao === indice) atualizarPainel({
+        name: capitulo.querySelector('h3').textContent,
+        language: capitulo.dataset.language || 'GitHub',
+        description: capitulo.querySelector('[data-chapter-description]').textContent,
+        html_url: capitulo.querySelector('a').href,
+        topics: capitulo.dataset.topics ? capitulo.dataset.topics.split(',') : [],
+        homepage: capitulo.dataset.homepage || '',
+      }, linguagens[capitulo.dataset.language] || 'github', capitulo.querySelector('h3').textContent, capitulo.dataset.language || 'GitHub', capitulo.querySelector('[data-chapter-description]').textContent);
+    });
+    document.querySelector('[data-stage-number]').textContent = atual.dataset.number;
+  }, { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.2, 0.6] });
+
+  capitulos.forEach((capitulo) => observer.observe(capitulo));
+}
+
+async function getProjectsGithub() {
+  const destaques = ['publicai-monitor-web', 'publicai-monitor-api', 'agenda-barbearia'];
+  const arquivo = ['app-minha-compras', 'Site-lojaFit', 'loja-fit-backend'];
+
+  try {
+    const resposta = await fetch('https://api.github.com/users/paulobrandao26/repos?sort=updated&per_page=100');
+    if (!resposta.ok) throw new Error(`GitHub respondeu ${resposta.status}`);
+    const repositorios = await resposta.json();
+    const porNome = new Map(repositorios.map((repositorio) => [repositorio.name.toLowerCase(), repositorio]));
+
+    destaques.forEach((nome, indice) => {
+      const repositorio = porNome.get(nome.toLowerCase());
+      const capitulo = document.querySelector(`[data-project="${nome.toLowerCase()}"]`);
+      if (!repositorio || !capitulo) return;
+      capitulo.dataset.language = repositorio.language || 'GitHub';
+      capitulo.dataset.topics = (repositorio.topics || []).join(',');
+      capitulo.dataset.homepage = repositorio.homepage || '';
+      atualizarCapitulo(capitulo, repositorio, indice);
+    });
+
+    const lista = document.querySelector('#project-archive-list');
+    const itens = arquivo.map((nome) => porNome.get(nome.toLowerCase())).filter(Boolean);
+    if (lista && itens.length) {
+      lista.replaceChildren(...itens.map((repositorio) => {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        const nome = document.createElement('span');
+        const detalhes = document.createElement('span');
+        nome.textContent = nomeLegivel(repositorio.name);
+        detalhes.textContent = `${repositorio.language || 'GitHub'} ↗`;
+        link.href = repositorio.html_url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.append(nome, detalhes);
+        item.append(link);
+        return item;
+      }));
+    }
+  } catch (error) {
+    console.error('Não foi possível carregar os projetos do GitHub:', error);
+  }
+}
 
 getProjectsGithub();
-
-// Função de inicialização do Carrossel - Swiper
-function iniciarSwiper() {
-  new Swiper('.projects-swiper', {
-    slidesPerView: 1,
-    slidesPerGroup: 1,
-    spaceBetween: 24,
-    centeredSlides: false,
-    loop: true,
-    watchOverflow: true,
-
-    breakpoints: {
-      0: {
-        slidesPerView: 1,
-        slidesPerGroup: 1,
-        spaceBetween: 40,
-        centeredSlides: false
-      },
-      769: {
-        slidesPerView: 2,
-        slidesPerGroup: 2,
-        spaceBetween: 40,
-        centeredSlides: false
-      },
-      1025: {
-        slidesPerView: 3,
-        slidesPerGroup: 3,
-        spaceBetween: 54,
-        centeredSlides: false
-      }
-    },
-
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      dynamicBullets: true,
-    },
-
-    autoplay: {
-      delay: 5000,
-      pauseOnMouseEnter: true,
-      disableOnInteraction: false,
-    },
-
-    grabCursor: true,
-    slidesOffsetBefore: 0,
-    slidesOffsetAfter: 0,
-  });
-}
+observarCapitulos();
 
 // Função de Validação do Formulário
 formulario.addEventListener('submit', function (event) {
