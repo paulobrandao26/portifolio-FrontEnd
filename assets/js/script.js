@@ -45,7 +45,7 @@ const descricoesProjetos = {
   'publicai-monitor-api': 'Serviço que resume licitações públicas com inteligência artificial.',
   'agenda-barbearia': 'Sistema de agendamento que organiza horários de uma barbearia.',
   'app-minha-compras': 'Aplicativo para acompanhar compras feitas no cartão de crédito.',
-  'site-lojafit': 'Site da Loja Fit.',
+  'site-lojafit': 'Loja virtual de produtos fitness.',
   'loja-fit-backend': 'Serviços que dão suporte às operações da Loja Fit.',
 };
 
@@ -66,8 +66,8 @@ function atualizarCapitulo(capitulo, repositorio, indice) {
   capitulo.dataset.number = String(indice + 1).padStart(2, '0');
   link.href = repositorio.html_url;
 
+  let deploy = capitulo.querySelector('[data-deploy-link]');
   if (repositorio.homepage) {
-    let deploy = capitulo.querySelector('[data-deploy-link]');
     if (!deploy) {
       deploy = document.createElement('a');
       deploy.dataset.deployLink = '';
@@ -78,15 +78,23 @@ function atualizarCapitulo(capitulo, repositorio, indice) {
       capitulo.append(deploy);
     }
     deploy.href = repositorio.homepage;
+  } else {
+    deploy?.remove();
+    deploy = null;
   }
 
-  if (indice === 0) atualizarPainel(icone, nome, descricao);
+  if (indice === 0) atualizarPainel(icone, nome, descricao, link.href, deploy?.href);
 }
 
-function atualizarPainel(icone, nome, descricao) {
+function atualizarPainel(icone, nome, descricao, githubUrl, deployUrl) {
   document.querySelector('[data-stage-icon]').src = `./assets/icons/languages/${icone}.svg`;
   document.querySelector('[data-stage-name]').textContent = nome;
   document.querySelector('[data-stage-description]').textContent = descricao;
+  const github = document.querySelector('[data-stage-github]');
+  const deploy = document.querySelector('[data-stage-deploy]');
+  github.href = githubUrl;
+  deploy.hidden = !deployUrl;
+  if (deployUrl) deploy.href = deployUrl;
 }
 
 function observarCapitulos() {
@@ -94,10 +102,14 @@ function observarCapitulos() {
   const scrollMomentSupported = matchMedia('(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)').matches;
   if (!('IntersectionObserver' in window) || capitulos.length === 0 || !scrollMomentSupported) return;
 
-  const observer = new IntersectionObserver((entradas) => {
-    const visiveis = entradas.filter((entrada) => entrada.isIntersecting);
-    if (!visiveis.length) return;
-    const atual = visiveis.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0].target;
+  const observer = new IntersectionObserver(() => {
+    const centro = window.innerHeight * 0.5;
+    const atual = capitulos.find((capitulo) => {
+      const quadro = capitulo.getBoundingClientRect();
+      return quadro.top <= centro && quadro.bottom >= centro;
+    });
+    if (!atual) return;
+
     const indice = capitulos.indexOf(atual);
     capitulos.forEach((capitulo, posicao) => {
       capitulo.classList.toggle('is-active', posicao === indice);
@@ -105,16 +117,18 @@ function observarCapitulos() {
         linguagens[capitulo.dataset.language] || 'github',
         capitulo.querySelector('h3').textContent,
         capitulo.querySelector('[data-chapter-description]').textContent,
+        capitulo.querySelector('a:not([data-deploy-link])').href,
+        capitulo.querySelector('[data-deploy-link]')?.href,
       );
     });
-  }, { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.2, 0.6] });
+  }, { rootMargin: '-49% 0px -49% 0px', threshold: 0 });
 
   capitulos.forEach((capitulo) => observer.observe(capitulo));
 }
 
 async function getProjectsGithub() {
-  const destaques = ['publicai-monitor-web', 'publicai-monitor-api', 'agenda-barbearia'];
-  const arquivo = ['app-minha-compras', 'Site-lojaFit', 'loja-fit-backend'];
+  const destaques = ['publicai-monitor-web', 'Site-lojaFit', 'agenda-barbearia'];
+  const arquivo = ['app-minha-compras', 'publicai-monitor-api', 'loja-fit-backend'];
 
   try {
     const resposta = await fetch('https://api.github.com/users/paulobrandao26/repos?sort=updated&per_page=100');
