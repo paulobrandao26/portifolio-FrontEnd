@@ -26,12 +26,18 @@ O projeto consome dados dinâmicos da **API do GitHub**, permitindo que informa�
 - Integração com a **API do GitHub** para:
   - Exibição dinâmica das informações do perfil
   - Listagem automática dos repositórios
-- Apresentação editorial dos projetos, com um painel que acompanha os capítulos durante a rolagem no desktop
-- Lista de repositórios complementares carregada pela API do GitHub
+- Design **cinematográfico** com efeitos de scroll (GSAP + Lenis):
+  - Rolagem suave e barra de progresso
+  - Abertura em que o nome se abre ao meio enquanto a próxima seção sobe por cima
+  - Texto da seção "Sobre" que se acende palavra por palavra
+  - Faixa de tecnologias que acelera conforme a velocidade da rolagem
+  - Projetos em rolagem horizontal com a tela travada (desktop) e carrossel de deslizar (celular)
+  - Cursor personalizado e botões magnéticos (somente com mouse)
+- Projetos carregados pela API do GitHub (nome, linguagem e link de deploy)
+- Respeita a preferência de **menos movimento** do sistema e continua funcionando se as bibliotecas de animação não carregarem
 - **Formulário de contato com validação no frontend**, garantindo o correto preenchimento dos campos
 - Página dedicada de **confirmação de envio** do formulário
-- Navegação fluida com menu fixo e rolagem suave
-- Interface intuitiva e organizada, focada na experiência do usuário
+- Layout responsivo, pensado primeiro para o celular
 
 ------
 
@@ -45,10 +51,9 @@ portfolio/
 │
 ├── assets/
 │   ├── css/
-│   │   ├── portfolio.css # Identidade visual, layouts e responsividade
-│   │   └── style.css     # Estilos da página de confirmação
+│   │   └── portfolio.css # Identidade visual, layouts e responsividade (todas as páginas)
 │   ├── js/
-│   │   └── script.js     # Integração com GitHub, capítulos e validações
+│   │   └── script.js     # Integração com GitHub, efeitos de scroll e validações
 │   ├── img/             # Imagens e ilustrações
 │   └── icons/           # Ícones das linguagens e redes sociais
 │
@@ -64,6 +69,7 @@ portfolio/
 - **JavaScript (ES6+)**: Interatividade, consumo de APIs e validações
 - **Fom Submit:** Serviço de envio de e-mails via formulário HTML
 - **GitHub API**: Fonte dinâmica de dados do perfil e repositórios
+- **GSAP + ScrollTrigger** e **Lenis**: Animações ligadas à rolagem (carregados por CDN)
 
 ------
 
