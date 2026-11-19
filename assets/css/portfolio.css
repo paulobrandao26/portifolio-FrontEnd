@@ -15,7 +15,7 @@
   --menta: #5ff0b5;
   --laranja: #ff8a3d;
 
-  --display: "Syne", "Arial Black", system-ui, sans-serif;
+  --display: "Unbounded", "Arial Black", system-ui, sans-serif;
   --texto: "Instrument Sans", system-ui, sans-serif;
 
   --borda: 2.5px solid var(--tinta);
@@ -167,7 +167,7 @@ ul { list-style: none; }
   font-family: var(--display);
   font-weight: 800;
   font-size: 1.05rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   text-decoration: none;
   color: var(--tinta);
 }
@@ -223,9 +223,9 @@ ul { list-style: none; }
   font-family: var(--display);
   font-weight: 700;
   /* peso 700: "Brandão" ocupa 4,4x o tamanho da fonte (o 800 ocupa 6,6x) */
-  font-size: clamp(2.8rem, 10vw, 7.4rem);
+  font-size: clamp(2.1rem, 7vw, 5.4rem);
   line-height: 0.9;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   color: var(--branco);
   text-shadow: 4px 4px 0 var(--tinta);
 }
@@ -324,9 +324,9 @@ ul { list-style: none; }
 .sobre__texto {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(1.45rem, 3.5vw, 2.6rem);
+  font-size: clamp(1.15rem, 2.9vw, 2.1rem);
   line-height: 1.16;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .sobre__texto .palavra { display: inline-block; white-space: pre; }
@@ -441,9 +441,9 @@ html:not(.anim) [data-faixa="-1"] .faixa__trilho { animation-direction: reverse;
 .projetos__titulo {
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(2.2rem, 6.5vw, 4.4rem);
+  font-size: clamp(1.7rem, 5vw, 3.6rem);
   line-height: 0.95;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
 }
 .projetos__dica { max-width: 32ch; font-size: 0.95rem; font-weight: 500; }
 .so-toque { display: inline; }
@@ -496,9 +496,9 @@ html:not(.anim) [data-faixa="-1"] .faixa__trilho { animation-direction: reverse;
 .quadro h3 {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 1.35rem;
+  font-size: 1.05rem;
   line-height: 1.02;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 .quadro__desc { font-size: 0.9rem; font-weight: 500; line-height: 1.4; }
 .quadro__acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 8px; }
@@ -556,9 +556,9 @@ html:not(.anim) [data-faixa="-1"] .faixa__trilho { animation-direction: reverse;
   max-width: 17ch;
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(1.9rem, 5vw, 3.8rem);
+  font-size: clamp(1.5rem, 4vw, 3rem);
   line-height: 1;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .contato__titulo .palavra-mascara { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; }
@@ -646,9 +646,9 @@ html:not(.anim) [data-faixa="-1"] .faixa__trilho { animation-direction: reverse;
 .sucesso__titulo {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(2.6rem, 9vw, 6.4rem);
+  font-size: clamp(2rem, 7.5vw, 5rem);
   line-height: 0.92;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   text-shadow: 4px 4px 0 var(--tinta);
 }
 .sucesso__texto { max-width: 34ch; font-size: 1.1rem; font-weight: 500; }
