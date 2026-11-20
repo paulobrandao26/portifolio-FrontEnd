@@ -26,7 +26,7 @@ const nomesProjetos = {
   'agenda-barbearia': 'Agenda Barbearia',
   'app-minha-compras': 'App Minha Compras',
   'site-lojafit': 'Site Loja Fit',
-  'loja-fit-backend': 'Loja Fit Backend',
+  'break-eventos': 'Break Eventos',
 };
 
 const descricoesProjetos = {
@@ -35,7 +35,7 @@ const descricoesProjetos = {
   'agenda-barbearia': 'Sistema de agendamento que organiza horários de uma barbearia.',
   'app-minha-compras': 'Aplicativo para acompanhar compras feitas no cartão de crédito.',
   'site-lojafit': 'Loja virtual de produtos fitness.',
-  'loja-fit-backend': 'Serviços que dão suporte às operações da Loja Fit.',
+  'break-eventos': 'Calendário de eventos de breaking no Brasil, com foco em Recife.',
 };
 
 function nomeLegivel(nome) {
